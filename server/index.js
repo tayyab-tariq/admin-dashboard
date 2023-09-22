@@ -10,6 +10,11 @@ import generalRoutes from './routes/general.js';
 import managementRoutes from './routes/management.js';
 import salesRoutes from './routes/sales.js';
 import connectDB from './config/db.js';
+import { notFound, errorHandler } from './middleware/errorMiddleware.js';
+
+/* DATA IMPORTS */
+import User from './models/User.js';
+import { dataUser } from './data/index.js';
 
 /* CONFIGURATION */
 dotenv.config();
@@ -31,11 +36,12 @@ app.use("/general", generalRoutes);
 app.use("/management", managementRoutes);
 app.use("/sales", salesRoutes);
 
+app.use(notFound);
+app.use(errorHandler);
+
 app.listen(PORT, () => {
     console.log(`Server started on port ${PORT}`);
     
     /* ADD DATA ONCE */
-    // User.insertMany(users);
-    // Post.insertMany(posts);
-    
+    // User.insertMany(dataUser);
 })
