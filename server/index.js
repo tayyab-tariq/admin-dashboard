@@ -14,7 +14,9 @@ import { notFound, errorHandler } from './middleware/errorMiddleware.js';
 
 /* DATA IMPORTS */
 import User from './models/User.js';
-import { dataUser } from './data/index.js';
+import Product from './models/Product.js';
+import ProductStat from './models/ProductStat.js';
+import { dataUser, dataProduct, dataProductStat } from './data/index.js';
 
 /* CONFIGURATION */
 dotenv.config();
@@ -44,4 +46,6 @@ app.listen(PORT, () => {
     
     /* ADD DATA ONCE */
     // User.insertMany(dataUser);
+    // Product.insertMany(dataProduct);
+    // ProductStat.insertMany(dataProductStat);
 })

@@ -104,10 +104,10 @@ const Navbar = ({ user, isSidebarOpen, setIsSidebarOpen }) => {
 
               <Box>
                 <Typography fontWeight='bold' fontSize='0.85' sx={{color: palette.secondary[100]}}>
-                  {'Tayyab'}
+                  {user.name}
                 </Typography>
                 <Typography fontSize='0.75' sx={{color: palette.secondary[200]}}>
-                  {'Developer'}
+                  {user.occupation}
                 </Typography>
               </Box>
               <ArrowDropDownOutlined sx={{ color: palette.secondary[300], fontSize: '25px' }}/>
