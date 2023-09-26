@@ -1,9 +1,7 @@
 import { useGetCustomersQuery } from "@/state/api"
 import { Box, useTheme } from "@mui/material"
-import Header from "@/scenes/components/Header";
+import Header from "@/components/Header";
 import { DataGrid } from "@mui/x-data-grid";
-import { BorderTop } from "@mui/icons-material";
-
 
 const Customers = () => {
   const palette = useTheme().palette;
@@ -63,6 +61,10 @@ const Customers = () => {
             border: 'none',
           },
 
+          '& .MuiInputBase-root': {
+            marginBottom: '1rem',
+          },
+
           '& .MuiDataGrid-cell': {
             borderBottom: 'none',
           },
@@ -72,15 +74,13 @@ const Customers = () => {
             color: palette.secondary[100],
             borderBottom: 'none',
           },
-
-          '& .MuiDataGrid-virtualScroller': {
-            backgroundColor: palette.background.light,
+          "& .MuiDataGrid-virtualScroller": {
+            backgroundColor: palette.primary.light,
           },
-
-          '& .MuiDataGrid-footContainer': {
+          "& .MuiDataGrid-footerContainer": {
             backgroundColor: palette.background.alt,
             color: palette.secondary[100],
-            borderTop: 'none',
+            borderTop: "none",
           },
           "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
             color: `${palette.secondary[200]} !important`,
@@ -92,6 +92,7 @@ const Customers = () => {
           getRowId={(row) => row._id}
           rows={data || []}
           columns={columns}
+          editMode="row"
         />
       </Box>
     

@@ -11,9 +11,9 @@ import {
   useMediaQuery,
 } from "@mui/material";
 import { useState } from "react";
-import Header from "../components/Header";
+import Header from "../../components/Header";
 import { useGetProductsQuery } from "@/state/api";
-import Loader from "../components/Loader";
+import Loader from "../../components/Loader";
 
 const Product = ({
   _id,
@@ -23,7 +23,7 @@ const Product = ({
   rating,
   category,
   supply,
-  stat,
+  stats,
 }) => {
   const palette = useTheme().palette;
   const [isExpanded, setIsExpanded] = useState(false);
@@ -84,8 +84,8 @@ const Product = ({
         <CardContent>
           <Typography>id: {_id}</Typography>  
           <Typography>Supply Left: {supply}</Typography>
-          <Typography>Yearly Sales This Year: {stat[0].yearlySalesTotal}</Typography>
-          <Typography>Yearly Units Sold This Year: {stat[0].yearlyTotalSoldUnits}</Typography>  
+          <Typography>Yearly Sales This Year: {stats.yearlySalesTotal}</Typography>
+          <Typography>Yearly Units Sold This Year: {stats.yearlyTotalSoldUnits}</Typography>  
         </CardContent> 
       </Collapse>
 
@@ -96,7 +96,6 @@ const Product = ({
 const Products = () => {
   const isNonMobile = useMediaQuery("(min-width: 1000px)");
   const { data, isLoading } = useGetProductsQuery();
-
   return (
     <Box m="1.5rem 2rem">
       <Header title="PRODUCTS" subtitle="See your list of products." />
@@ -122,7 +121,7 @@ const Products = () => {
               rating,
               category,
               supply,
-              stat,
+              stats,
             }) => (
               <Product key={_id} 
                 _id={_id}
@@ -132,7 +131,7 @@ const Products = () => {
                 rating={rating}
                 category={category}
                 supply={supply}
-                stat={stat}
+                stats={stats}
               />
             )
           )}
