@@ -104,6 +104,7 @@ const Sidebar = ({
   {
     /* GET CURRENT PAGE/PATH */
   }
+
   const [active, setActive] = useState("");
   const navigate = useNavigate();
   const palette = useTheme().palette;
@@ -117,7 +118,9 @@ const Sidebar = ({
       {isSidebarOpen && (
         <Drawer
           open={isSidebarOpen}
-          onClose={() => setIsSidebarOpen(false)}
+          onClose={() => {
+            setIsSidebarOpen(false);
+          }}
           variant="persistent"
           anchor="left"
           sx={{
@@ -140,7 +143,11 @@ const Sidebar = ({
                   </Typography>
                 </Box>
                 {!isNonMobile && (
-                  <IconButton onClick={() => setIsSidebarOpen(!isSidebarOpen)}>
+                  <IconButton
+                    onClick={() => {
+                      setIsSidebarOpen(!isSidebarOpen);
+                    }}
+                  >
                     <ChevronLeft />
                   </IconButton>
                 )}
@@ -211,16 +218,24 @@ const Sidebar = ({
                   objectFit: "cover",
                 }}
               />
-              <Box textAlign='left'>
-                <Typography fontWeight='bold' fontSize='0.9rem' sx={{color: palette.secondary[100]}}>
+              <Box textAlign="left">
+                <Typography
+                  fontWeight="bold"
+                  fontSize="0.9rem"
+                  sx={{ color: palette.secondary[100] }}
+                >
                   {user.name}
                 </Typography>
-                <Typography fontSize='0.8rem' sx={{color: palette.secondary[200]}}>
+                <Typography
+                  fontSize="0.8rem"
+                  sx={{ color: palette.secondary[200] }}
+                >
                   {user.occupation}
                 </Typography>
               </Box>
-              <SettingsOutlined sx={{color: palette.secondary[300], fontSize: '25px'}} /> 
-
+              <SettingsOutlined
+                sx={{ color: palette.secondary[300], fontSize: "25px" }}
+              />
             </FlexBetween>
           </Box>
         </Drawer>

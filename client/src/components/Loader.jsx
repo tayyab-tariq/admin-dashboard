@@ -2,16 +2,23 @@ import { Spinner } from 'react-bootstrap';
 
 const Loader = () => {
   return (
-    <Spinner
-      animation='border'
-      role='status'
+    <div
       style={{
-        width: '50px',
-        height: '50px',
-        margin: 'auto',
-        display: 'block',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: '100%', // Ensure the parent div has a height set
       }}
-    ></Spinner>
+    >
+      <Spinner
+        animation='border'
+        role='status'
+        style={{
+          width: '50px',
+          height: '50px',
+        }}
+      ></Spinner>
+    </div>
   );
 };
 
