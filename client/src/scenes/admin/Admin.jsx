@@ -66,6 +66,9 @@ const Admin = () => {
           "& .MuiDataGrid-root": {
             border: "none",
           },
+          '& .MuiInputBase-root': {
+            marginBottom: '1rem',
+          },
           "& .MuiDataGrid-cell": {
             borderBottom: "none",
           },
@@ -93,9 +96,9 @@ const Admin = () => {
           rows={data || []}
           columns={columns}
           columnVisibilityModel={visible}
-          // slots={
-          //   { columnMenu : DataGridCustomColumnMenu }
-          // }
+          slots={
+            { columnMenu : DataGridCustomColumnMenu }
+          }
         />
       </Box>
     </Box>

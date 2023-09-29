@@ -1,12 +1,20 @@
 import {
     GridColumnMenuContainer,
+    GridColumnMenuFilterItem,
+    GridColumnMenuHideItem
   } from "@mui/x-data-grid";
   
 const DataGridCustomColumnMenu = (props) => {
-  const { hideMeny, currentColumn, open } = props;
+  const { hideMenu, colDef, open } = props;
   
     return (
-    <GridColumnMenuContainer>
+    <GridColumnMenuContainer
+        hideMenu={hideMenu}
+        colDef={colDef}
+        open={open}
+    >
+        <GridColumnMenuFilterItem onClick={hideMenu} colDef={colDef} /> 
+        <GridColumnMenuHideItem onClick={hideMenu} colDef={colDef} /> 
     </GridColumnMenuContainer>
   )
 }
