@@ -9,8 +9,8 @@ const getAdmins = asyncHandler (async (req, res) => {
 
 
 const getUserPerformance = asyncHandler (async (req, res) => { 
-    const admins = await User.find({ role: 'admin' }).select('-password');
-    res.status(200).json(admins);
+    const { id } = req.params;
+    // res.status(200).json(admins);
 });
 
 export { getAdmins, getUserPerformance };
