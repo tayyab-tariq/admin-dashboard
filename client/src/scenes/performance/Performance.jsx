@@ -1,5 +1,6 @@
 import DataGridCustomColumnMenu from "@/components/DataGridCustomColumnMenu";
 import Header from "@/components/Header"
+import { useGetUserPerformanceQuery } from "@/state/api";
 import { Box, useTheme } from "@mui/material"
 import { DataGrid } from "@mui/x-data-grid";
 import { useSelector } from "react-redux";
@@ -7,6 +8,39 @@ import { useSelector } from "react-redux";
 
 const Performance = () => {
   const palette = useTheme().palette;
+  const userId = useSelector((state) => state.global.userId);
+  const { data, isLoading } = useGetUserPerformanceQuery(userId);
+
+  const columns = [
+    {
+      field: '_id',
+      headerName: 'ID',
+      flex: 1,
+    },
+    {
+      field: "userId",
+      headerName: "User ID",
+      flex: 1,
+    },
+    {
+      field: "createdAt",
+      headerName: "CreatedAt",
+      flex: 1,
+    },
+    {
+      field: "products",
+      headerName: "# of Products",
+      flex: 0.5,
+      sortable: false,
+      renderCell: (params) => params.value.length,
+    },
+    {
+      field: "cost",
+      headerName: "Cost",
+      flex: 1,
+      renderCell: (params) => `$${Number(params.value).toFixed(2)}`,
+    },
+  ]
 
   return (
     <Box m='1.5rem 2.5rem'>
@@ -40,10 +74,15 @@ const Performance = () => {
             },
           }}
         >
-            {/* <DataGrid 
+            <DataGrid 
+                loading={isLoading || !data}
+                getRowId={(row) => row._id}
                 rows={(data && data.sales) || []}
-
-            /> */}
+                columns={columns}
+                slots={{
+                  columnMenu: DataGridCustomColumnMenu,
+                }}
+            />
         </Box>
 
     </Box>
