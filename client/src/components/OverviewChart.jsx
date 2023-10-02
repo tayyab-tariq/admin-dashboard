@@ -47,7 +47,7 @@ const OverviewChart = ({ isDashboard = false, view }) => {
   }, [data]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return data || !isLoading ? (
-    <Box height='65vh'>
+    <Box height={isDashboard ? '45vh' : '65vh'}>
       <ResponsiveLine
         data={view === "sales" ? totalSalesLine : totalUnitsLine}
         theme={{
