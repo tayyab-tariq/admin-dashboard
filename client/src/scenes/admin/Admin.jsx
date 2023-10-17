@@ -1,13 +1,16 @@
 import DataGridCustomColumnMenu from "@/components/DataGridCustomColumnMenu";
 import Header from "@/components/Header"
 import { useGetAdminsQuery } from "@/state/api";
-import { Box, useTheme } from "@mui/material"
+import { Box, useTheme, Typography } from "@mui/material"
 import { DataGrid } from "@mui/x-data-grid";
+import AdminPanelSettingsOutlinedIcon from "@mui/icons-material/AdminPanelSettingsOutlined";
+import LockOpenOutlinedIcon from "@mui/icons-material/LockOpenOutlined";
+import SecurityOutlinedIcon from "@mui/icons-material/SecurityOutlined";
+
 
 const Admin = () => {
   const palette = useTheme().palette;
   const { data, isLoading } = useGetAdminsQuery();
-  console.log(data);
 
   const visible = {
     _id: false,
@@ -51,7 +54,33 @@ const Admin = () => {
     {
       field: "role",
       headerName: "Role",
-      flex: 0.5,
+      flex: 1,
+      renderCell: ({ row: { role } }) => {
+        return (
+          <Box
+            width="60%"
+            m="0 auto"
+            p="5px"
+            display="flex"
+            justifyContent="center"
+            backgroundColor={
+              role === "admin"
+                ? palette.greenAccent[600]
+                : palette === "manager"
+                ? palette.greenAccent[700]
+                : palette.greenAccent[700]
+            }
+            borderRadius="4px"
+          >
+            {role === "admin" && <AdminPanelSettingsOutlinedIcon />}
+            {role === "manager" && <SecurityOutlinedIcon />}
+            {role === "user" && <LockOpenOutlinedIcon />}
+            <Typography color={palette.grey[100]} sx={{ ml: "5px" }}>
+              {role}
+            </Typography>
+          </Box>
+        );
+      },
     },
   ];
 
