@@ -45,7 +45,14 @@ export const api = createApi({
             query: () => "general/dashboard",
             providesTags: ["Dashboard"],
         }),
+        updateCustomer: build.mutation({
+            query: (data) => ({
+                url: "client/customers", 
+                method: "PUT",
+                body: data,
+            }),
+        }),
     })
 });
 
-export const { useGetUserQuery, useGetProductsQuery, useGetCustomersQuery, useGetTransactionsQuery, useGetGeographyQuery, useGetSalesQuery, useGetAdminsQuery, useGetUserPerformanceQuery, useGetDashboardQuery } = api;
+export const { useGetUserQuery, useGetProductsQuery, useGetCustomersQuery, useGetTransactionsQuery, useGetGeographyQuery, useGetSalesQuery, useGetAdminsQuery, useGetUserPerformanceQuery, useGetDashboardQuery, useUpdateCustomerMutation } = api;

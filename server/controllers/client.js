@@ -29,6 +29,20 @@ const getCustomers = asyncHandler (async (req, res) => {
     res.status(200).json(customers);
 });
 
+const updateCustomer = asyncHandler (async (req, res) => { 
+    const userId = req.body._id;
+
+    const updateQuery = {
+        $set: req.body, // Use the request body to update the document
+    };
+
+    // Use Mongoose to update the document by ID
+    const updatedDocument = await User.findByIdAndUpdate(userId, updateQuery, { new: true, runValidators: true  });
+
+    res.json(updatedDocument);
+    
+});
+
 const getTransactions = asyncHandler (async (req, res) => { 
     // sort will look like this: { "filed": "userid", "sort": "desc" }
     const { page = 1, pageSize = 20, sort = null, search = '' } = req.query;
@@ -89,4 +103,4 @@ const getGeography = asyncHandler (async (req, res) => {
     res.status(200).json(formattedLocations);
 });
 
-export { getProducts, getCustomers, getTransactions, getGeography };
+export { getProducts, getCustomers, getTransactions, getGeography, updateCustomer };

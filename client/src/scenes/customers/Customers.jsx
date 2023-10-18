@@ -1,5 +1,6 @@
-import { useState, useEffect } from "react";
-import { useGetCustomersQuery } from "@/state/api"
+/* eslint-disable react/jsx-key */
+import { useState } from "react";
+import { useGetCustomersQuery, useUpdateCustomerMutation } from "@/state/api"
 import { Box, useTheme, Typography } from "@mui/material"
 import Header from "@/components/Header";
 import Button from '@mui/material/Button';
@@ -18,6 +19,8 @@ import {
 import AdminPanelSettingsOutlinedIcon from "@mui/icons-material/AdminPanelSettingsOutlined";
 import LockOpenOutlinedIcon from "@mui/icons-material/LockOpenOutlined";
 import SecurityOutlinedIcon from "@mui/icons-material/SecurityOutlined";
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
 
 const EditToolbar = (props) => {
   const { setRowModesModel } = props;
@@ -25,10 +28,11 @@ const EditToolbar = (props) => {
   const handleClick = () => {
     // const id = randomId();
     // setRows((oldRows) => [...oldRows, { id, name: '', age: '', isNew: true }]);
-    setRowModesModel((oldModel) => ({
-      ...oldModel,
-      [id]: { mode: GridRowModes.Edit, fieldToFocus: 'name' },
-    }));
+    // setRowModesModel((oldModel) => ({
+    //   ...oldModel,
+    //   [id]: { mode: GridRowModes.Edit, fieldToFocus: 'name' },
+    // }));
+    console.log('test');
   };
 
   return (
@@ -44,7 +48,11 @@ const Customers = () => {
   const palette = useTheme().palette;
   const { data, isLoading } = useGetCustomersQuery();
   const [rowModesModel, setRowModesModel] = useState({});
+  const [updateData, { isUpdating }] = useUpdateCustomerMutation();
+  const [snackbar, setSnackbar] = useState(null);
 
+  const handleCloseSnackbar = () => setSnackbar(null);    
+  
   const handleEditClick = (id) => () => {
     setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
   };
@@ -60,6 +68,19 @@ const Customers = () => {
     setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
   };
 
+  const processRowUpdate = async (newRow) => {
+    const updatedData = await updateData(newRow);     
+    if (updateData.isSuccess){
+      setSnackbar({ children: 'User successfully saved', severity: 'success' });
+    }
+    return updatedData.unwrap;
+  };
+
+  const handleProcessRowUpdateError = (error) => {
+    console.error(error);
+    setSnackbar({ children: error.message, severity: 'error' });
+  };
+  
 
   const notVisible = {
     _id: false,
@@ -76,6 +97,10 @@ const Customers = () => {
       field: 'name',
       headerName: 'Name',
       flex: 0.5,
+      preProcessEditCellProps: (params) => {
+        const hasError = params.props.value.length < 3;
+        return { ...params.props, error: hasError };
+      },
       editable: true
     },
     {
@@ -238,7 +263,7 @@ const Customers = () => {
         }}
       >
         <DataGrid 
-          checkboxSelection
+          // checkboxSelection
           loading={isLoading || !data}
           getRowId={(row) => row._id}
           columnVisibilityModel={notVisible}
@@ -249,7 +274,9 @@ const Customers = () => {
           onRowModesModelChange={handleRowModesModelChange}
           rowModesModel={rowModesModel}
           onRowEditStop={handleRowEditStop}
-          // processRowUpdate={processRowUpdate}
+          processRowUpdate={processRowUpdate}
+          onProcessRowUpdateError={handleProcessRowUpdateError}
+
           slots={{
             toolbar: EditToolbar,
           }}
@@ -258,6 +285,17 @@ const Customers = () => {
           }}
 
         />
+
+        {!!snackbar && (
+          <Snackbar
+            open
+            anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+            onClose={handleCloseSnackbar}
+            autoHideDuration={6000}
+          >
+            <Alert {...snackbar} onClose={handleCloseSnackbar} />
+          </Snackbar>
+        )}
       </Box>
     
     </Box>
