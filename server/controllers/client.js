@@ -29,7 +29,15 @@ const getCustomers = asyncHandler (async (req, res) => {
     res.status(200).json(customers);
 });
 
-const updateCustomer = asyncHandler (async (req, res) => { 
+const updateCustomer = asyncHandler (async (req, res) => {
+    
+    if (req.body.isNew){
+        const newUser = new User(req.body);
+        const savedUser = await newUser.save();
+        console.log(savedUser);
+        return res.status(200);
+    }
+
     const userId = req.body._id;
 
     const updateQuery = {
@@ -37,9 +45,9 @@ const updateCustomer = asyncHandler (async (req, res) => {
     };
 
     // Use Mongoose to update the document by ID
-    const updatedDocument = await User.findByIdAndUpdate(userId, updateQuery, { new: true, runValidators: true  });
+    const updatedDocument = await User.findByIdAndUpdate(userId, updateQuery, { new: true, runValidators: true  }).select('-password');
 
-    res.json(updatedDocument);
+    return res.json(updatedDocument);
     
 });
 

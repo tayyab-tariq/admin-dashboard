@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-key */
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useGetCustomersQuery, useUpdateCustomerMutation } from "@/state/api"
 import { Box, useTheme, Typography } from "@mui/material"
 import Header from "@/components/Header";
@@ -23,16 +23,16 @@ import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 
 const EditToolbar = (props) => {
-  const { setRowModesModel } = props;
+  const { setRowModesModel, setRows } = props;
 
   const handleClick = () => {
-    // const id = randomId();
-    // setRows((oldRows) => [...oldRows, { id, name: '', age: '', isNew: true }]);
-    // setRowModesModel((oldModel) => ({
-    //   ...oldModel,
-    //   [id]: { mode: GridRowModes.Edit, fieldToFocus: 'name' },
-    // }));
-    console.log('test');
+    const newId = '1';
+  
+    setRows((oldRows) => [{ _id: newId, name: '', occupation: '', role: 'user', isNew: true }, ...oldRows]);
+    setRowModesModel((oldModel) => ({
+      ...oldModel,
+      [newId]: { mode: GridRowModes.Edit, fieldToFocus: 'name' },
+    }));
   };
 
   return (
@@ -47,6 +47,7 @@ const EditToolbar = (props) => {
 const Customers = () => {
   const palette = useTheme().palette;
   const { data, isLoading } = useGetCustomersQuery();
+  const [ rows, setRows ] = useState();
   const [rowModesModel, setRowModesModel] = useState({});
   const [updateData, { isUpdating }] = useUpdateCustomerMutation();
   const [snackbar, setSnackbar] = useState(null);
@@ -69,11 +70,11 @@ const Customers = () => {
   };
 
   const processRowUpdate = async (newRow) => {
-    const updatedData = await updateData(newRow);     
-    if (updateData.isSuccess){
+    const updatedData = await updateData(newRow);
+    if (updatedData && updatedData.data){
       setSnackbar({ children: 'User successfully saved', severity: 'success' });
     }
-    return updatedData.unwrap;
+    return updatedData.data;
   };
 
   const handleProcessRowUpdateError = (error) => {
@@ -115,7 +116,7 @@ const Customers = () => {
       type: 'number',
       flex: 0.5,
       renderCell: (params) => {
-        return params.value.replace(/^(\d{3})(\d{3})(\d{4})/, "($1)$2-$3");
+        return params.value ? params.value.replace(/^(\d{3})(\d{3})(\d{4})/, "($1)$2-$3") : null;
       },
       editable: true,
     },
@@ -224,6 +225,10 @@ const Customers = () => {
     }
   };
 
+  useEffect(() => {
+    setRows(data);
+  },[data]);
+
   return (
     <Box m='1.5rem 2.5rem'>
       <Header title='CUSTOMERS' subtitle='List of Customers'  />
@@ -263,11 +268,10 @@ const Customers = () => {
         }}
       >
         <DataGrid 
-          // checkboxSelection
-          loading={isLoading || !data}
+          loading={!rows}
           getRowId={(row) => row._id}
           columnVisibilityModel={notVisible}
-          rows={data || []}
+          rows={rows || []}
           columns={columns}
           editMode="row"
           
@@ -276,12 +280,11 @@ const Customers = () => {
           onRowEditStop={handleRowEditStop}
           processRowUpdate={processRowUpdate}
           onProcessRowUpdateError={handleProcessRowUpdateError}
-
           slots={{
             toolbar: EditToolbar,
           }}
           slotProps={{
-            toolbar: { setRowModesModel },
+            toolbar: { setRowModesModel, setRows },
           }}
 
         />
