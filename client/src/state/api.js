@@ -45,6 +45,13 @@ export const api = createApi({
             query: () => "general/dashboard",
             providesTags: ["Dashboard"],
         }),
+        addCustomer: build.mutation({
+            query: (data) => ({
+                url: "client/customers", 
+                method: "POST",
+                body: data,
+            }),
+        }),
         updateCustomer: build.mutation({
             query: (data) => ({
                 url: "client/customers", 
@@ -52,7 +59,14 @@ export const api = createApi({
                 body: data,
             }),
         }),
+        deleteCustomer: build.mutation({
+            query: (data) => ({
+                url: "client/customers", 
+                method: "DELETE",
+                body: data,
+            }),
+        }),
     })
 });
 
-export const { useGetUserQuery, useGetProductsQuery, useGetCustomersQuery, useGetTransactionsQuery, useGetGeographyQuery, useGetSalesQuery, useGetAdminsQuery, useGetUserPerformanceQuery, useGetDashboardQuery, useUpdateCustomerMutation } = api;
+export const { useGetUserQuery, useGetProductsQuery, useGetCustomersQuery, useGetTransactionsQuery, useGetGeographyQuery, useGetSalesQuery, useGetAdminsQuery, useGetUserPerformanceQuery, useGetDashboardQuery, useUpdateCustomerMutation, useAddCustomerMutation, useDeleteCustomerMutation } = api;

@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-key */
 import { useEffect, useState } from "react";
-import { useGetCustomersQuery, useUpdateCustomerMutation } from "@/state/api"
+import { useGetCustomersQuery, useUpdateCustomerMutation, useAddCustomerMutation, useDeleteCustomerMutation } from "@/state/api"
 import { Box, useTheme, Typography } from "@mui/material"
 import Header from "@/components/Header";
 import Button from '@mui/material/Button';
@@ -23,11 +23,15 @@ import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 
 const EditToolbar = (props) => {
+  if (props.isLoading){
+    return null;
+  }
+
   const { setRowModesModel, setRows } = props;
 
   const handleClick = () => {
+    
     const newId = '1';
-  
     setRows((oldRows) => [{ _id: newId, name: '', occupation: '', role: 'user', isNew: true }, ...oldRows]);
     setRowModesModel((oldModel) => ({
       ...oldModel,
@@ -49,7 +53,9 @@ const Customers = () => {
   const { data, isLoading } = useGetCustomersQuery();
   const [ rows, setRows ] = useState();
   const [rowModesModel, setRowModesModel] = useState({});
-  const [updateData, { isUpdating }] = useUpdateCustomerMutation();
+  const [addCustomer, { isAdding }] = useAddCustomerMutation();
+  const [updateCustomer, { isUpdating }] = useUpdateCustomerMutation();
+  const [deleteCustomer, { isDeleting }] = useDeleteCustomerMutation();
   const [snackbar, setSnackbar] = useState(null);
 
   const handleCloseSnackbar = () => setSnackbar(null);    
@@ -63,18 +69,39 @@ const Customers = () => {
       ...rowModesModel,
       [id]: { mode: GridRowModes.View, ignoreModifications: true },
     });
+
+    const editedRow = rows.find((row) => row._id === id);
+    if (editedRow.isNew) {
+      setRows(rows.filter((row) => row._id !== id));
+    }
   };
 
   const handleSaveClick = (id) => () => {
     setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
   };
 
+  const handleDeleteClick = (id) => async () => {
+    const updatedData = await deleteCustomer({userId: id});
+    console.log(updatedData);
+    setRows(rows.filter((row) => row._id !== id));
+  };
+
   const processRowUpdate = async (newRow) => {
-    const updatedData = await updateData(newRow);
-    if (updatedData && updatedData.data){
-      setSnackbar({ children: 'User successfully saved', severity: 'success' });
+    if (newRow.isNew){
+      const updatedData = await addCustomer(newRow);
+      if (updatedData.status == 200 && updatedData.data){
+        setSnackbar({ children: 'User added successfully', severity: 'success' });
+
+      } 
+      return updatedData.data;
+    } else {
+      const updatedData = await updateCustomer(newRow);
+      if (updatedData && updatedData.data){
+        setSnackbar({ children: 'User saved successfully', severity: 'success' });
+      }
+      return updatedData.data;
     }
-    return updatedData.data;
+    
   };
 
   const handleProcessRowUpdateError = (error) => {
@@ -108,6 +135,10 @@ const Customers = () => {
       field: 'email',
       headerName: 'Email',
       flex: 1,
+      preProcessEditCellProps: (params) => {
+        const hasError = params.props.value.length < 3;
+        return { ...params.props, error: hasError };
+      },
       editable: true,
     },
     {
@@ -205,7 +236,7 @@ const Customers = () => {
           <GridActionsCellItem
             icon={<DeleteIcon />}
             label="Delete"
-            // onClick={handleDeleteClick(id)}
+            onClick={handleDeleteClick(id)}
             color="inherit"
           />,
         ];
@@ -284,7 +315,7 @@ const Customers = () => {
             toolbar: EditToolbar,
           }}
           slotProps={{
-            toolbar: { setRowModesModel, setRows },
+            toolbar: { setRowModesModel, setRows, isLoading },
           }}
 
         />
