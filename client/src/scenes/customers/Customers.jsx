@@ -81,23 +81,29 @@ const Customers = () => {
   };
 
   const handleDeleteClick = (id) => async () => {
+    console.log(rows);
+    console.log(id);
     const updatedData = await deleteCustomer({userId: id});
-    console.log(updatedData);
+    // console.log(updatedData);
     setRows(rows.filter((row) => row._id !== id));
   };
 
   const processRowUpdate = async (newRow) => {
+
     if (newRow.isNew){
       const updatedData = await addCustomer(newRow);
-      if (updatedData.status == 200 && updatedData.data){
+      if (updatedData && updatedData.data){
         setSnackbar({ children: 'User added successfully', severity: 'success' });
-
-      } 
+      } else {
+        setSnackbar({ children: 'An error occurred, please try again later', severity: 'error' });
+      }
       return updatedData.data;
     } else {
       const updatedData = await updateCustomer(newRow);
       if (updatedData && updatedData.data){
         setSnackbar({ children: 'User saved successfully', severity: 'success' });
+      } else {
+        setSnackbar({ children: 'An error occurred, please try again later', severity: 'error' });
       }
       return updatedData.data;
     }
@@ -106,9 +112,7 @@ const Customers = () => {
 
   const handleProcessRowUpdateError = (error) => {
     console.error(error);
-    setSnackbar({ children: error.message, severity: 'error' });
   };
-  
 
   const notVisible = {
     _id: false,
@@ -126,7 +130,7 @@ const Customers = () => {
       headerName: 'Name',
       flex: 0.5,
       preProcessEditCellProps: (params) => {
-        const hasError = params.props.value.length < 3;
+        const hasError = !params.props.value || params.props.value.length < 3;
         return { ...params.props, error: hasError };
       },
       editable: true
@@ -136,7 +140,7 @@ const Customers = () => {
       headerName: 'Email',
       flex: 1,
       preProcessEditCellProps: (params) => {
-        const hasError = params.props.value.length < 3;
+        const hasError = !params.props.value || params.props.value.length < 3;
         return { ...params.props, error: hasError };
       },
       editable: true,
@@ -305,7 +309,6 @@ const Customers = () => {
           rows={rows || []}
           columns={columns}
           editMode="row"
-          
           onRowModesModelChange={handleRowModesModelChange}
           rowModesModel={rowModesModel}
           onRowEditStop={handleRowEditStop}
