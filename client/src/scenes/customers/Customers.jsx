@@ -3,8 +3,6 @@ import { useEffect, useState } from "react";
 import { useGetCustomersQuery, useUpdateCustomerMutation, useAddCustomerMutation, useDeleteCustomerMutation } from "@/state/api"
 import { Box, useTheme, Typography } from "@mui/material"
 import Header from "@/components/Header";
-import Button from '@mui/material/Button';
-import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import SaveIcon from '@mui/icons-material/Save';
@@ -12,7 +10,6 @@ import CancelIcon from '@mui/icons-material/Close';
 import {
   GridRowModes,
   DataGrid,
-  GridToolbarContainer,
   GridActionsCellItem,
   GridRowEditStopReasons,
 } from '@mui/x-data-grid';
@@ -21,32 +18,9 @@ import LockOpenOutlinedIcon from "@mui/icons-material/LockOpenOutlined";
 import SecurityOutlinedIcon from "@mui/icons-material/SecurityOutlined";
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
+import ConfirmationDialog from "@/components/ConfirmationDialog";
+import Toolbar from "./Toolbar";
 
-const EditToolbar = (props) => {
-  if (props.isLoading){
-    return null;
-  }
-
-  const { setRowModesModel, setRows } = props;
-
-  const handleClick = () => {
-    
-    const newId = '1';
-    setRows((oldRows) => [{ _id: newId, name: '', occupation: '', role: 'user', isNew: true }, ...oldRows]);
-    setRowModesModel((oldModel) => ({
-      ...oldModel,
-      [newId]: { mode: GridRowModes.Edit, fieldToFocus: 'name' },
-    }));
-  };
-
-  return (
-    <GridToolbarContainer>
-      <Button color="primary" startIcon={<AddIcon />} onClick={handleClick}>
-        Add record
-      </Button>
-    </GridToolbarContainer>
-  );
-};
 
 const Customers = () => {
   const palette = useTheme().palette;
@@ -57,6 +31,23 @@ const Customers = () => {
   const [updateCustomer, { isUpdating }] = useUpdateCustomerMutation();
   const [deleteCustomer, { isDeleting }] = useDeleteCustomerMutation();
   const [snackbar, setSnackbar] = useState(null);
+  const [open, setOpen] = useState(false);
+  const [value, setValue] = useState(false);
+
+
+  const handleClose = async (userId) => {
+    setOpen(false);
+
+    if (userId){
+      const updatedData = await deleteCustomer({userId: userId});
+      if (updatedData && updatedData.data){
+        setSnackbar({ children: 'User deleted', severity: 'info' });
+        setRows(rows.filter((row) => row._id !== userId));
+      } else {
+        setSnackbar({ children: 'An error occurred, please try again later', severity: 'error' });
+      }
+    }
+  };
 
   const handleCloseSnackbar = () => setSnackbar(null);    
   
@@ -81,11 +72,8 @@ const Customers = () => {
   };
 
   const handleDeleteClick = (id) => async () => {
-    console.log(rows);
-    console.log(id);
-    const updatedData = await deleteCustomer({userId: id});
-    // console.log(updatedData);
-    setRows(rows.filter((row) => row._id !== id));
+    setOpen(true);
+    setValue(id);    
   };
 
   const processRowUpdate = async (newRow) => {
@@ -94,6 +82,9 @@ const Customers = () => {
       const updatedData = await addCustomer(newRow);
       if (updatedData && updatedData.data){
         setSnackbar({ children: 'User added successfully', severity: 'success' });
+        setRows(rows.filter((row) => row._id != 1));
+        console.log(updatedData.data);  
+        setRows((oldRows) => [updatedData.data, ...oldRows]);
       } else {
         setSnackbar({ children: 'An error occurred, please try again later', severity: 'error' });
       }
@@ -101,7 +92,7 @@ const Customers = () => {
     } else {
       const updatedData = await updateCustomer(newRow);
       if (updatedData && updatedData.data){
-        setSnackbar({ children: 'User saved successfully', severity: 'success' });
+        setSnackbar({ children: 'User saved successfully', severity: 'info' });
       } else {
         setSnackbar({ children: 'An error occurred, please try again later', severity: 'error' });
       }
@@ -247,7 +238,7 @@ const Customers = () => {
       },
     },
 
-  ]
+  ];
 
   const handleRowModesModelChange = (newRowModesModel) => {
     setRowModesModel(newRowModesModel);
@@ -315,12 +306,19 @@ const Customers = () => {
           processRowUpdate={processRowUpdate}
           onProcessRowUpdateError={handleProcessRowUpdateError}
           slots={{
-            toolbar: EditToolbar,
+            toolbar: Toolbar,
           }}
           slotProps={{
             toolbar: { setRowModesModel, setRows, isLoading },
           }}
 
+        />
+
+        <ConfirmationDialog
+          keepMounted
+          open={open}
+          value={value}
+          onClose={handleClose}
         />
 
         {!!snackbar && (
