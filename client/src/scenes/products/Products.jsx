@@ -3,17 +3,20 @@ import {
   Card,
   CardActions,
   CardContent,
+  CardMedia,
   Collapse,
   Button,
   Typography,
   Rating,
   useTheme,
   useMediaQuery,
+  CardActionArea
 } from "@mui/material";
 import { useState } from "react";
 import Header from "../../components/Header";
 import { useGetProductsQuery } from "@/state/api";
 import Loader from "../../components/Loader";
+import FormDialog from "./FormDialog";
 
 const Product = ({
   _id,
@@ -24,11 +27,27 @@ const Product = ({
   category,
   supply,
   stats,
+  index
 }) => {
   const palette = useTheme().palette;
   const [isExpanded, setIsExpanded] = useState(false);
-  
+  const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
+  const [open, setOpen] = useState(false);
+
+  const handleClose = async (userId) => {
+    setOpen(false);
+
+    if (userId){
+      console.log('test');
+    }
+  };
+
+  const handleOpen = () => {
+    setOpen(true);
+  };
+
   return (
+  <>
     <Card
       sx={{
         backgroundImage: "none",
@@ -37,6 +56,16 @@ const Product = ({
       }}
       variant="outlined"
     >
+      <CardActionArea onClick={handleOpen}>
+        <CardMedia
+          component="img"
+          height="194"
+          image={`https://api.slingacademy.com/public/sample-photos/${index}.jpeg`}
+          loading="lazy"
+          
+          alt="Paella dish"
+        />
+      </CardActionArea>
       <CardContent>
         <Typography sx={{
             fontSize: 14,
@@ -63,8 +92,22 @@ const Product = ({
         </Typography>
         <Rating value={rating} readOnly />
 
-        <Typography variant="body2">{description}</Typography>
-        
+        {isDescriptionExpanded ? (
+          <Typography variant="body2">{description}</Typography>
+        ) : (
+          <Typography variant="body2">
+            {description.slice(0, 100)} {/* Display first 100 characters */}
+            {description.length > 100 && (
+              <span
+                style={{ cursor: 'pointer', color: 'white', fontWeight: 'bold'}}
+                onClick={() => setIsDescriptionExpanded(true)}
+              >
+                {' '}
+                ...
+              </span>
+            )}
+          </Typography>
+        )}        
       </CardContent>
       
       <CardActions>
@@ -82,14 +125,25 @@ const Product = ({
         }}
       >
         <CardContent>
-          <Typography>id: {_id}</Typography>  
           <Typography>Supply Left: {supply}</Typography>
-          <Typography>Yearly Sales This Year: {stats.yearlySalesTotal}</Typography>
-          <Typography>Yearly Units Sold This Year: {stats.yearlyTotalSoldUnits}</Typography>  
+          <Typography>Yearly Sales This Year: {stats?.yearlySalesTotal}</Typography>
+          <Typography>Yearly Units Sold This Year: {stats?.yearlyTotalSoldUnits}</Typography>  
         </CardContent> 
       </Collapse>
 
     </Card>
+
+      <FormDialog
+      keepMounted
+      open={open}
+      name={name}
+      description={description}
+      price={price}
+      rating={rating}
+      index={index}
+      onClose={handleClose}
+      />
+  </>  
   );
 };
 
@@ -122,7 +176,7 @@ const Products = () => {
               category,
               supply,
               stats,
-            }) => (
+            }, index) => (
               <Product key={_id} 
                 _id={_id}
                 name={name}
@@ -132,6 +186,7 @@ const Products = () => {
                 category={category}
                 supply={supply}
                 stats={stats}
+                index={index+1}
               />
             )
           )}
