@@ -7,6 +7,8 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Close';
+import LinearProgress from '@mui/material/LinearProgress';
+
 import {
   GridRowModes,
   DataGrid,
@@ -307,6 +309,7 @@ const Customers = () => {
           onProcessRowUpdateError={handleProcessRowUpdateError}
           slots={{
             toolbar: Toolbar,
+            loadingOverlay: LinearProgress,
           }}
           slotProps={{
             toolbar: { setRowModesModel, setRows, isLoading },

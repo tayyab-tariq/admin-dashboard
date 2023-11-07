@@ -27,3 +27,21 @@ body,
 ::-webkit-scrollbar-track:hover {
   background: #21295c;
 }
+
+@keyframes pulse {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 0.1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.shiny-placeholder {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 1000px 100%;
+  animation: pulse 2.5s infinite linear;
+}

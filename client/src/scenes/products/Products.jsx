@@ -12,7 +12,7 @@ import {
   useMediaQuery,
   CardActionArea
 } from "@mui/material";
-import { useState } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import Header from "../../components/Header";
 import { useGetProductsQuery } from "@/state/api";
 import Loader from "../../components/Loader";
@@ -30,6 +30,7 @@ const Product = ({
   index
 }) => {
   const palette = useTheme().palette;
+  const [imageLoaded, setImageLoaded] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
   const [open, setOpen] = useState(false);
@@ -46,6 +47,10 @@ const Product = ({
     setOpen(true);
   };
 
+  const handleImageLoad = () => {
+    setImageLoaded(true);
+  };
+
   return (
   <>
     <Card
@@ -53,18 +58,28 @@ const Product = ({
         backgroundImage: "none",
         backgroundColor: palette.background.alt,
         borderRadius: "0.55rem",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "space-between",
+        height: "100%",
       }}
       variant="outlined"
     >
       <CardActionArea onClick={handleOpen}>
+        
+
         <CardMedia
           component="img"
           height="194"
           image={`https://api.slingacademy.com/public/sample-photos/${index}.jpeg`}
           loading="lazy"
-          
-          alt="Paella dish"
+          onLoad={handleImageLoad}
+          alt={name}
         />
+      
+        {/* {!imageLoaded && <div className="shiny-placeholder" style={{ height: '194px' }}/>} */}
+      
+        
       </CardActionArea>
       <CardContent>
         <Typography sx={{
@@ -149,12 +164,41 @@ const Product = ({
 
 const Products = () => {
   const isNonMobile = useMediaQuery("(min-width: 1000px)");
-  const { data, isLoading } = useGetProductsQuery();
+  const [page, setPage] = useState(0)
+  const [products, setProducts] = useState([]); // Use a state variable for products
+  const [loading, setLoading] = useState(false);
+
+
+  const { data, isLoading } = useGetProductsQuery({ page, pageSize: 4 });
+  const hasMore = data && data.length === 4; // Adjust this based on your actual page size
+  const observer = useRef();
+
+  const lastProductRef = useCallback(node => {
+    if (isLoading) return
+    if (observer.current) observer.current.disconnect()
+    observer.current = new IntersectionObserver(entries => {
+      if (entries[0].isIntersecting && hasMore) {
+        setPage(prevPageNumber => prevPageNumber + 1)
+        setLoading(true);
+      }
+    })
+    if (node) observer.current.observe(node)
+  }, [isLoading, hasMore])
+
+  useEffect(() => {
+    // Append the new data to the existing products when data changes
+    if (data) {
+      setProducts(prevProducts => [...prevProducts, ...data]);
+      setLoading(false);
+
+    }
+  }, [data]);
+
   return (
     <Box m="1.5rem 2rem">
       <Header title="PRODUCTS" subtitle="See your list of products." />
 
-      {data || !isLoading ? (
+      {products && products.length > 0 ? (
         <Box
           mt="20px"
           display="grid"
@@ -166,34 +210,23 @@ const Products = () => {
             "& > div": { gridColumn: isNonMobile ? undefined : "span-4" },
           }}
         >
-          {data.map(
-            ({
-              _id,
-              name,
-              description,
-              price,
-              rating,
-              category,
-              supply,
-              stats,
-            }, index) => (
-              <Product key={_id} 
-                _id={_id}
-                name={name}
-                description={description}
-                price={price}
-                rating={rating}
-                category={category}
-                supply={supply}
-                stats={stats}
-                index={index+1}
-              />
-            )
-          )}
+          {products && products.map((product, index) => {
+            if (index+1 === products.length) {
+              return (
+                <div ref={lastProductRef} key={product._id}>
+                  <Product index={index + 1} {...product} />
+                </div>
+              );
+            } else {
+              return <Product key={product._id} index={index + 1} {...product} />;
+            }
+          })}
         </Box>
+        
       ) : (
         <Loader />
       )}
+      {loading && <Loader />}
     </Box>
   );
 };

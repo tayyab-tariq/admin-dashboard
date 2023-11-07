@@ -37,17 +37,7 @@ const FormDialog = (props) => {
         >
         {/* <DialogTitle>
             
-      </DialogTitle> */}
-        <Box
-            component='img'
-            alt="profile"
-            src={`https://api.slingacademy.com/public/sample-photos/${index}.jpeg`}
-            height='50%'
-            width='50%'
-            borderRadius='50%'
-            sx={{ objectFit: 'cover', display: 'block', marginLeft: 'auto', marginRight: 'auto', marginBottom: '1rem', marginTop: '1rem' }}
-        />
-
+      </DialogTitle> */}    
         <DialogContent dividers>
             {name}
         </DialogContent>

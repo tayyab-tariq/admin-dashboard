@@ -15,7 +15,14 @@ const Toolbar = (props) => {
     const handleClick = () => {
         
         const newId = '1';
-        setRows((oldRows) => [{ _id: newId, name: '', occupation: '', role: 'user', isNew: true }, ...oldRows]);
+        setRows((oldRows) => {
+            if (oldRows){
+                return [{ _id: newId, name: '', occupation: '', role: 'user', isNew: true }, ...oldRows];
+            } else {
+                return [{ _id: newId, name: '', occupation: '', role: 'user', isNew: true }];
+            }
+            
+        });
         setRowModesModel((oldModel) => ({
             ...oldModel,
             [newId]: { mode: GridRowModes.Edit, fieldToFocus: 'name' },

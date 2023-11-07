@@ -10,8 +10,11 @@ export const api = createApi({
             providesTags: ['User'],
         }),
         getProducts: build.query({
-            query: () => `client/products`,
-            providesTags: ['Products'],
+            query: ({ page, pageSize }) => ({
+                url: `client/products`,
+                method: 'GET',
+                params: { page, pageSize },
+            }),
         }),
         getCustomers: build.query({
             query: () => `client/customers`,

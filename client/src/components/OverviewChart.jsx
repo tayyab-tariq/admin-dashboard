@@ -9,8 +9,10 @@ const OverviewChart = ({ isDashboard = false, view }) => {
   const { data, isLoading } = useGetSalesQuery();
 
   const [totalSalesLine, totalUnitsLine] = useMemo(() => {
-    if (!data) return [];
 
+    if (!data) return [];
+    console.log(data);
+    
     const { monthlyData } = data;
     const totalSalesLine = {
       id: "totalSales",
@@ -46,7 +48,7 @@ const OverviewChart = ({ isDashboard = false, view }) => {
     return [[totalSalesLine], [totalUnitsLine]];
   }, [data]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  return data || !isLoading ? (
+  return data && !isLoading ? (
     <Box height={isDashboard ? '45vh' : '65vh'}>
       <ResponsiveLine
         data={view === "sales" ? totalSalesLine : totalUnitsLine}

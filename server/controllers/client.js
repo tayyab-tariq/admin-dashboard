@@ -6,9 +6,10 @@ import asyncHandler from "express-async-handler";
 import getCountryIso3 from "country-iso-2-to-3";
 
 const getProducts = asyncHandler(async (req, res) => {
+  const { page, pageSize } = req.query;
   const products = await Product.find()
-  // .skip(1 * 4)
-  // .limit(4);
+  .skip(page * pageSize)
+  .limit(pageSize);
 
   const productsWithStats = await Promise.all(
     products.map(async (product) => {
