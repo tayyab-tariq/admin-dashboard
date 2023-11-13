@@ -19,6 +19,22 @@ const getDashboard = asyncHandler (async (req, res) => {
     //  Recent Transactions
     const transactions = await Transaction.find().limit(50).sort({ createdOn: -1 });
     
+    //  Get User Name from Transactions
+    const userTransactions = await Promise.all(
+        transactions.map(async (transaction) => {
+            const userTransaction = await User.find({
+            _id: transaction.userId,
+            }).select('name');
+            const name = userTransaction[0].name;
+            
+            return {
+                ...transaction._doc,
+                name,
+            };
+        })
+    );  
+
+
     //  Overall Stats
     const overallStat = await OverallStat.find({ year: currentYear });
 
@@ -44,7 +60,7 @@ const getDashboard = asyncHandler (async (req, res) => {
         salesByCategory,
         monthStat,
         dailyStat,
-        transactions
+        transactions: userTransactions
     });
 });
 

@@ -39,9 +39,24 @@ const getUserPerformance = asyncHandler (async (req, res) => {
     });
 
 
+    //  Get Name
+    const userTransactions = await Promise.all(
+        filteredTransactions.map(async (transaction) => {
+            const userTransaction = await User.find({
+            _id: transaction.userId,
+            }).select('name');
+            const name = userTransaction[0].name;
+            
+            return {
+                ...transaction._doc,
+                name,
+            };
+        })
+    );  
+
     res.status(200).json({
         user: userWithStats[0],
-        sales: filteredTransactions
+        sales: userTransactions
     });
 });
 

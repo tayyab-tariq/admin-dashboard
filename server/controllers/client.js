@@ -95,6 +95,21 @@ const getTransactions = asyncHandler(async (req, res) => {
     .skip(pageSize * page)
     .limit(pageSize);
 
+    //  Get Name
+    const userTransactions = await Promise.all(
+      transactions.map(async (transaction) => {
+        const userTransaction = await User.find({
+          _id: transaction.userId,
+        }).select('name');
+        const name = userTransaction[0].name;
+        
+        return {
+          ...transaction._doc,
+          name,
+        };
+      })
+    );  
+
   const total = await Transaction.countDocuments({
     $or: [
       { cost: { $regex: new RegExp(search, "i") } },
@@ -103,7 +118,7 @@ const getTransactions = asyncHandler(async (req, res) => {
   });
 
   res.status(200).json({
-    transactions,
+    transactions: userTransactions,
     total,
   });
 });
