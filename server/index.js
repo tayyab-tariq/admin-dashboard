@@ -33,7 +33,10 @@ app.use(helmet.crossOriginResourcePolicy({ policy: 'cross-origin' }));
 app.use(morgan('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cors());
+// app.use(cors());
+app.use(cors({
+    origin: '*'
+}));
 
 /* ROUTES */
 app.use("/client", clientRoutes);
