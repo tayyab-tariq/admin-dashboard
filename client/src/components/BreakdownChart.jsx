@@ -3,7 +3,6 @@ import { useTheme } from "@emotion/react";
 import { Box, Typography } from "@mui/material";
 import { ResponsivePie } from "@nivo/pie";
 import Loader from "./Loader";
-import { idID } from "@mui/material/locale";
 
 const BreakdownChart = ({ isDashboard = false }) => {
   const { data, isLoading } = useGetSalesQuery();
@@ -121,8 +120,8 @@ const BreakdownChart = ({ isDashboard = false }) => {
           },
         ]}
       />
-      <Box
-        position='absolute'
+      {/* <Box
+        position='relative'
         top='50%'
         left='50%'
         color={palette.secondary[400]}
@@ -137,7 +136,7 @@ const BreakdownChart = ({ isDashboard = false }) => {
         <Typography variant="h6">
           {!isDashboard && 'Total: '} ${data.yearlySalesTotal}
         </Typography>
-      </Box>
+      </Box> */}
 
     </Box>
   );

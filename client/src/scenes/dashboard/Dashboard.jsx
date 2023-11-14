@@ -26,14 +26,15 @@ const Dashboard = () => {
       flex: 1,
     },
     {
-      field: "userId",
-      headerName: "User ID",
+      field: "name",
+      headerName: "User Name",
       flex: 1,
     },
     {
-      field: "createdAt",
-      headerName: "CreatedAt",
+      field: "cost",
+      headerName: "Cost",
       flex: 1,
+      renderCell: (params) => `$${Number(params.value).toFixed(2)}`,
     },
     {
       field: "products",
@@ -43,10 +44,13 @@ const Dashboard = () => {
       renderCell: (params) => params.value.length,
     },
     {
-      field: "cost",
-      headerName: "Cost",
+      field: "createdAt",
+      headerName: "CreatedAt",
       flex: 1,
-      renderCell: (params) => `$${Number(params.value).toFixed(2)}`,
+      valueFormatter: (params) => {
+        const date = new Date(params.value);
+        return date.toUTCString(); // Adjust date formatting as needed
+      },
     },
   ];
 
@@ -169,6 +173,9 @@ const Dashboard = () => {
           <DataGrid
             loading={isLoading || !data}
             getRowId={(row) => row._id}
+            columnVisibilityModel={{
+              _id: false,
+            }}
             rows={(data && data.transactions) || []}
             columns={columns}
             hideFooterPagination

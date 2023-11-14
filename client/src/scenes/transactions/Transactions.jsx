@@ -19,8 +19,6 @@ const Transactions = () => {
     search,
   });
 
-  console.log(data);
-
   const columns = [
     {
       field: '_id',
@@ -28,14 +26,16 @@ const Transactions = () => {
       flex: 1,
     },
     {
-      field: 'userId',
-      headerName: 'User ID',
+      field: 'name',
+      headerName: 'User Name',
       flex: 1,
     },
     {
-      field: 'createdAt',
-      headerName: 'Created At',
+      field: 'cost',
+      headerName: 'Cost',
       flex: 1,
+      renderCell: (params) => `$${Number(params.value).toFixed(2)}`,
+
     },
     {
       field: 'products',
@@ -45,11 +45,13 @@ const Transactions = () => {
       renderCell: (params) => params.value.length,
     },
     {
-      field: 'cost',
-      headerName: 'Cost',
+      field: 'createdAt',
+      headerName: 'Created At',
       flex: 1,
-      renderCell: (params) => `$${Number(params.value).toFixed(2)}`,
-
+      valueFormatter: (params) => {
+        const date = new Date(params.value);
+        return date.toUTCString(); // Adjust date formatting as needed
+      },
     },
 
   ]
@@ -90,6 +92,9 @@ const Transactions = () => {
         <DataGrid 
           loading={isLoading || !data}
           getRowId={(row) => row._id}
+          columnVisibilityModel={{
+            _id: false,
+          }}
           rows={(data && data.transactions) || []}
           columns={columns}
           rowCount={(data && data.total) || 0}
