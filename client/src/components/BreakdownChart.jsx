@@ -9,10 +9,10 @@ const BreakdownChart = ({ isDashboard = false }) => {
   const palette = useTheme().palette;
 
   const colors = [
-    palette.secondary[500],
-    palette.secondary[300],
-    palette.secondary[300],
-    palette.secondary[500],
+    palette.blueAccent[500],
+    palette.blueAccent[300],
+    palette.redAccent[300],
+    palette.redAccent[500],
   ];
 
   if (!data || isLoading) {
@@ -56,7 +56,7 @@ const BreakdownChart = ({ isDashboard = false }) => {
                 strokeWidth: 1,
               },
               text: {
-                fill: palette.secondary[200],
+                fill: palette.secondary[100],
               },
             },
           },
@@ -67,7 +67,7 @@ const BreakdownChart = ({ isDashboard = false }) => {
           },
           tooltip: {
             container: {
-              color: palette.primary.main,
+              color: '#797A76',
             },
           },
         }}
@@ -120,7 +120,7 @@ const BreakdownChart = ({ isDashboard = false }) => {
           },
         ]}
       />
-      {/* <Box
+      <Box
         position='relative'
         top='50%'
         left='50%'
@@ -129,14 +129,14 @@ const BreakdownChart = ({ isDashboard = false }) => {
         pointerEvents='none'
         sx={{
           transform: isDashboard
-            ? "translate(-75%, -170%)"
-            : "translate(-50%, -100%)",
+            ? "translate(-55%, -1950%)"
+            : "translate(-50%, -2350%)",
         }}
       >
         <Typography variant="h6">
           {!isDashboard && 'Total: '} ${data.yearlySalesTotal}
         </Typography>
-      </Box> */}
+      </Box>
 
     </Box>
   );

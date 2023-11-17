@@ -63,7 +63,7 @@ const Dashboard = () => {
           <Button
             sx={{
               backgroundColor: palette.secondary.light,
-              color: palette.background.alt,
+              color: palette.secondary[700],
               fontSize: "14px",
               fontWeight: "bold",
               padding: "10px 20px",

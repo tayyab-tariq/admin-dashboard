@@ -20,12 +20,12 @@ body,
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-  background: #21295c;
+  background: #2e7c67;
 }
 
 /* Handle on Hover */
 ::-webkit-scrollbar-track:hover {
-  background: #21295c;
+  background: #2e7c67;
 }
 
 @keyframes pulse {

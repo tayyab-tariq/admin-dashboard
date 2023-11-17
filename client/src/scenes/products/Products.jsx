@@ -58,10 +58,10 @@ const Product = ({
         backgroundImage: "none",
         backgroundColor: palette.background.alt,
         borderRadius: "0.55rem",
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "space-between",
-        height: "100%",
+        height: '100%',   
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-between',
       }}
       variant="outlined"
     >
@@ -75,17 +75,14 @@ const Product = ({
           loading="lazy"
           onLoad={handleImageLoad}
           alt={name}
-        />
-      
-        {/* {!imageLoaded && <div className="shiny-placeholder" style={{ height: '194px' }}/>} */}
-      
+        />      
         
       </CardActionArea>
       <CardContent>
         <Typography sx={{
             fontSize: 14,
           }}
-          color={palette.secondary[700]}
+          color={palette.secondary[400]}
           gutterBottom        /* {Bottom margin} */
         >
           {category}
