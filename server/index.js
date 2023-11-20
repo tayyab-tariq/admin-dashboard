@@ -35,7 +35,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cors({
     credentials: true,
-    origin: 'https://dev-tayyab-admin.netlify.app/dashboard',
+    origin: 'https://dev-tayyab-admin.netlify.app',
 }));
 
 /* ROUTES */
