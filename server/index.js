@@ -1,6 +1,5 @@
 import bodyParser from 'body-parser';
 import express from 'express';
-import mongoose from 'mongoose';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import helmet from 'helmet';
@@ -25,7 +24,7 @@ import { dataUser, dataProduct, dataProductStat, dataTransaction, dataOverallSta
 dotenv.config();
 const PORT = process.env.PORT || 5000;
 
-connectDB();
+await connectDB();
 const app = express();
 app.use(express.json());
 app.use(helmet());
