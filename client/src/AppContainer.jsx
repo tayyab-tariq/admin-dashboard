@@ -63,7 +63,7 @@ const AppContainer = () => {
     if (loading || error || server) {
       return (
         <div className="flex items-center justify-center h-screen">
-          {loading ? <Loader /> : <ErrorComponent errorMessage={error} server/>}
+          {loading ? <Loader /> : <ErrorComponent errorMessage={error} server={server}/>}
         </div>
       );
     }
