@@ -34,10 +34,14 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cors({
     credentials: true,
-    origin: 'https://dev-tayyab-admin.netlify.app',
+    origin: process.env.CLIENT_URL,
 }));
 
 /* ROUTES */
+app.get("/server-status", (req, res) => {
+    res.json({ message: "Server is up and running!" });
+});
+
 app.use("/client", clientRoutes);
 app.use("/general", generalRoutes);
 app.use("/management", managementRoutes);

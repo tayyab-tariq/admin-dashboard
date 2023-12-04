@@ -1,4 +1,3 @@
-import React from "react";
 import {
   Box,
   Divider,
@@ -27,12 +26,12 @@ import {
   AdminPanelSettingsOutlined,
   TrendingUpOutlined,
   PieChartOutlined,
-  Settings,
 } from "@mui/icons-material";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import FlexBetween from "./FlexBetween";
 import profileImage from "@/assets/profile.jpeg";
+import PropTypes from "prop-types";
 
 const navItems = [
   {
@@ -243,5 +242,13 @@ const Sidebar = ({
     </Box>
   );
 };
+
+Sidebar.propTypes = {
+  user: PropTypes.object.isRequired,
+  setIsSidebarOpen: PropTypes.func.isRequired,
+  isNonMobile: PropTypes.bool.isRequired,
+  drawerWidth: PropTypes.string.isRequired,
+  isSidebarOpen: PropTypes.bool.isRequired,
+}
 
 export default Sidebar;
