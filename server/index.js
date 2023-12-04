@@ -32,7 +32,10 @@ app.use(helmet.crossOriginResourcePolicy({ policy: 'cross-origin' }));
 app.use(morgan('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cors());
+app.use(cors({
+    credentials: true,
+    origin: 'https://dev-tayyab-admin.netlify.app',
+}));
 
 /* ROUTES */
 app.use("/client", clientRoutes);
@@ -40,6 +43,7 @@ app.use("/general", generalRoutes);
 app.use("/management", managementRoutes);
 app.use("/sales", salesRoutes);
 
+/* MIDDLEWARE */
 app.use(notFound);
 app.use(errorHandler);
 
