@@ -30,7 +30,12 @@ const AppContainer = () => {
       const baseUrl = import.meta.env.VITE_BASE_URL;
       const checkServerStatus = async () => {
         try {
-          await axios.get(`${baseUrl}/server-status`);
+          await axios({
+            method: 'get',
+            url: `${baseUrl}/server-status`,
+            timeout: 5000,
+            signal: AbortSignal.timeout(5000) //Aborts request after 5 seconds
+          });
         } catch (err) {
           setServer(true);
           setError('Server Error');
@@ -52,14 +57,13 @@ const AppContainer = () => {
           setStore(appStore);
         } catch (err) {
           setError(`Error initializing the app: ${err.message}`);
-        } finally {
-          setLoading(false);
         }
       };
   
       initializeStore();
     }, []);
-  
+
+    console.log(loading);
     if (loading || error || server) {
       return (
         <div className="flex items-center justify-center h-screen">
