@@ -65,7 +65,13 @@ const AppContainer = () => {
 
     if (loading || error || server) {
       return (
-        <div className="flex items-center justify-center h-screen">
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          height: '100vh',
+          color: '#228B22',
+        }}>
           {loading ? <Loader /> : <ErrorComponent errorMessage={error} server={server}/>}
         </div>
       );
