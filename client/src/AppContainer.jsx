@@ -63,7 +63,6 @@ const AppContainer = () => {
       initializeStore();
     }, []);
 
-    console.log(loading);
     if (loading || error || server) {
       return (
         <div className="flex items-center justify-center h-screen">
